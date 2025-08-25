@@ -1,0 +1,6 @@
+__pycache__/
+output.txt
+/venv
+.env
+lookup.json
+.DS_Store
