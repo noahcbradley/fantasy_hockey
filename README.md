@@ -22,4 +22,4 @@ Create .env file in the root directory with the following environment variables
 
 ## Finding Your SWID and ESPN S2
 
-Refer to the following [guide](https://www.gamedaybot.com/help/espn_s2-and-swid/#:~:text=You%20can%20find%20these%20two,%3A%2F%2Ffantasy.espn.com.) to locate your SWID and ESPN S2 keys.
+Refer to the following [guide](https://www.gamedaybot.com/help/espn_s2-and-swid/#:~:text=You%20can%20find%20these%20two,%3A%2F%2Ffantasy.espn.com.) to locate your SWID and ESPN S2 keys
