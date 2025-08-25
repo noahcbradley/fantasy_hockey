@@ -16,14 +16,14 @@ GOALS = 'G'
 ASSISTS = 'A'
 POWERPLAY_POINTS = 'PPP'
 
-choice = input("\nEnter one of the following: \n\n1 for MyFantasy\n2 for PoonGoons\n: ")
+choice = input("\nEnter one of the following: \n\n1 for MyFantasy\n2 for PGs\n: ")
 
 if int(choice) == 1:
     # MyFantasy
     league = League(league_id=1520803790, year=2025, espn_s2=os.environ.get('MYFANTASY_ESPN_S2'), swid=os.environ.get('MY_ESPN_SWID'))
 else:
-    # PoonGoons
-    league = League(league_id=32023125, year=2025, espn_s2=os.environ.get('POONGOONS_ESPN_S2'), swid='{48ED85CC-8FE6-4075-AD85-CC8FE6007523}')
+    # PGs
+    league = League(league_id=32023125, year=2025, espn_s2=os.environ.get('PGS_ESPN_S2'), swid='{48ED85CC-8FE6-4075-AD85-CC8FE6007523}')
 
 os.system('cls' if os.name == 'nt' else 'clear')
 
