@@ -3,7 +3,7 @@ from espn_api.hockey import League
 # Fantasy league team names
 
 MF_TEAM_NAME = 'Tkachuk Around. Find Out'
-GOONS_TEAM_NAME = 'Kuchy Gang'
+GOONS_TEAM_NAME = 'All Heil Leon'
 
 # Returns players on a team
 def get_my_players(league: League):
@@ -21,8 +21,8 @@ def get_my_players(league: League):
     try:
         for player in my_players:
             # print(player)
-            if player.position != 'Goalie' and 'Last 7 2025' in player.stats:
-                players.append([player.name, player.proTeam, player.position, player.stats['Total 2025']['total'], player.stats['Last 7 2025']['total']])
+            if player.position != 'Goalie':# and 'Last 7 2025' in player.stats:
+                players.append([player.name, player.proTeam, player.position])# player.stats['Total 2025']['total'], player.stats['Last 7 2025']['total']])
 
     except KeyError as e:
         print(player.name)
