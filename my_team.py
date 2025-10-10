@@ -2,7 +2,7 @@ from espn_api.hockey import League
 
 # Fantasy league team names
 
-MF_TEAM_NAME = 'Tkachuk Around. Find Out'
+MF_TEAM_NAME = 'ChuChu Train'
 GOONS_TEAM_NAME = 'All Heil Leon'
 
 # Returns players on a team
