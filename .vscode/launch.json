@@ -6,7 +6,7 @@
     "configurations": [
     
         {
-            "name": "Python Debugger",
+            "name": "Fantasy Hockey Debugger",
             "type": "debugpy",
             "request": "launch",
             "program": "script.py",
