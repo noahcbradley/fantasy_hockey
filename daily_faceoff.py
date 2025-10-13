@@ -3,7 +3,6 @@ from requests_html import HTMLSession
 
 def pp1_daily_faceoff():
     TEAMS = ['anaheim-ducks',
-            'utah-mammoth',
             'boston-bruins',
             'buffalo-sabres',
             'calgary-flames',
@@ -30,6 +29,7 @@ def pp1_daily_faceoff():
             'st-louis-blues',
             'tampa-bay-lightning',
             'toronto-maple-leafs',
+            'utah-mammoth',
             'vancouver-canucks',
             'vegas-golden-knights',
             'washington-capitals',
