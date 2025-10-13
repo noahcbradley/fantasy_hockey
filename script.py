@@ -20,10 +20,10 @@ choice = input("\nEnter one of the following: \n\n1 for MyFantasy\n2 for PGs\n: 
 
 if int(choice) == 1:
     # MyFantasy
-    league = League(league_id=1520803790, year=int(my_team.CURRENT_YEAR), espn_s2=os.environ.get('MYFANTASY_ESPN_S2'), swid=os.environ.get('MY_ESPN_SWID'))
+    league = League(league_id=os.environ.get('LEAGUE_ID_MY_FANTASY'), year=int(my_team.CURRENT_YEAR), espn_s2=os.environ.get('MYFANTASY_ESPN_S2'), swid=os.environ.get('MY_ESPN_SWID'))
 else:
     # PGs
-    league = League(league_id=32023125, year=int(my_team.CURRENT_YEAR), espn_s2=os.environ.get('PGS_ESPN_S2'), swid=os.environ.get('MY_ESPN_SWID'))
+    league = League(league_id=os.environ.get('LEAGUE_ID_PGS'), year=int(my_team.CURRENT_YEAR), espn_s2=os.environ.get('PGS_ESPN_S2'), swid=os.environ.get('MY_ESPN_SWID'))
 
 os.system('cls' if os.name == 'nt' else 'clear')
 
