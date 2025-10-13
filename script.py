@@ -16,7 +16,7 @@ GOALS = 'G'
 ASSISTS = 'A'
 POWERPLAY_POINTS = 'PPP'
 
-choice =2# input("\nEnter one of the following: \n\n1 for MyFantasy\n2 for PGs\n: ")
+choice = input("\nEnter one of the following: \n\n1 for MyFantasy\n2 for PGs\n: ")
 
 if int(choice) == 1:
     # MyFantasy
