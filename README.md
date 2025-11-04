@@ -19,6 +19,8 @@ Create .env file in the root directory with the following environment variables
 - MY_ESPN_SWID
 - MYFANTASY_ESPN_S2
 - PGS_ESPN_S2
+- LEAGUE_ID_MY_FANTASY
+- LEAGUE_ID_PGS
 
 ## Finding Your SWID and ESPN S2
 
