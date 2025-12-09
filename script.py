@@ -15,6 +15,7 @@ LAST_7_GAMES = 4
 GOALS = 'G'
 ASSISTS = 'A'
 POWERPLAY_POINTS = 'PPP'
+GAMES_PLAYED = 'GP'
 
 choice = input("\nEnter one of the following: \n\n1 for MyFantasy\n2 for PGs\n: ")
 
@@ -31,9 +32,8 @@ os.system('cls' if os.name == 'nt' else 'clear')
 def print_players(player_list):
     for player in player_list:
         if player[3] != {}:
-            # print(player)
             print(player[NAME] + " - " + player[TEAM] + " - " + player[POSITION])
-            print('Goals: ' + str(player[5]) + ' | Assists: ' + str(player[6]) + ' | Points: ' + str(player[7]) + ' | Powerplay Points: ' + str(player[8]) + ' | Last 7 Games (Points): ' + str(player[9]) +"\n")
+            print('Goals: ' + str(player[5]) + ' | Assists: ' + str(player[6]) + ' | Points: ' + str(player[7]) + ' | Powerplay Points: ' + str(player[8]) + ' | Last 7 Games (Points): ' + str(player[9]) + ' | Points Per Game: ' + str((player[5] + player[6]) / player[10]) +"\n")
 
 
 pp1_players = daily_faceoff.pp1_daily_faceoff()
@@ -78,15 +78,19 @@ for player in target_players:
         assists = str(player[STATS][ASSISTS]).split('.')[0]
         powerplay_pts = str(player[STATS][POWERPLAY_POINTS]).split('.')[0]
         last_7_games_points = player[LAST_7_GAMES][GOALS] + player[LAST_7_GAMES][ASSISTS]
+        games_played = str(player[STATS][GAMES_PLAYED]).split('.')[0]
         player.append(int(goals)) # Goals index 5
         player.append(int(assists)) # Assists index 6
         player.append(player[5] + player[6]) # Points index 7
         player.append(int(powerplay_pts)) # PPP index 8
         player.append(int(last_7_games_points)) # Last 7 points index 9
+        player.append(int(games_played)) # Games played index 10
 
 # Sort players by points 
 target_players = sorted(target_players, key=lambda x: (x[9], x[7]), reverse=True)
 print('\n---------RESULTS---------')
+
+# print(target_players[0])
 
 print_players(target_players)
 
@@ -105,9 +109,11 @@ for player in my_players:
         assists = player[STATS][ASSISTS]
         points = goals + assists
         powerplay_pts = player[STATS][POWERPLAY_POINTS]
-        # print(player[NAME] + ' ' + str(player[LAST_7_GAMES]))
+        # print('TEST HERE')
+        # print(player)
         last_7_games_points = player[LAST_7_GAMES][GOALS] + player[LAST_7_GAMES][ASSISTS]
-        players_not_pp1.append([player[NAME], player[TEAM], player[POSITION], ' ', ' ', int(goals), int(assists), int(points), int(powerplay_pts) , int(last_7_games_points)])
+        games_played = player[STATS][GAMES_PLAYED]
+        players_not_pp1.append([player[NAME], player[TEAM], player[POSITION], ' ', ' ', int(goals), int(assists), int(points), int(powerplay_pts) , int(last_7_games_points), int(games_played)])
 
 
 players_not_pp1 = sorted(players_not_pp1, key=lambda x: (x[9], x[7]))
