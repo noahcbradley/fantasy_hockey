@@ -1,6 +1,10 @@
 __pycache__/
 output.txt
 /venv
+.venv/
 .env
 lookup.json
 .DS_Store
+node_modules/
+frontend/dist/
+*.pyc

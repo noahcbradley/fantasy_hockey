@@ -33,14 +33,18 @@ def print_players(player_list):
     for player in player_list:
         if player[3] != {}:
             print(player[NAME] + " - " + player[TEAM] + " - " + player[POSITION])
-            print('Goals: ' + str(player[5]) + ' | Assists: ' + str(player[6]) + ' | Points: ' + str(player[7]) + ' | Powerplay Points: ' + str(player[8]) + ' | Last 7 Games (Points): ' + str(player[9]) + ' | Points Per Game: ' + str((player[5] + player[6]) / player[10]) +"\n")
+            print('Goals: ' + str(player[5]) + ' | Assists: ' + str(player[6]) + ' | Points: ' + str(player[7]) + ' | Powerplay Points: ' + str(player[8]) +"\n")# + ' | Last 7 Games (Points): ' + str(player[9]) + ' | Points Per Game: ' + str((player[5] + player[6]) / player[10]) +"\n")
 
 
 pp1_players = daily_faceoff.pp1_daily_faceoff()
 
+# print(pp1_players)
+
 pp1_players = [item for sublist in pp1_players for item in sublist]
 
 my_players = my_team.get_my_players(league)
+
+# print(my_players)
 
 waiver_players = league.free_agents(size=1000)
 
@@ -56,8 +60,8 @@ to_dump = []
 for player in waiver_players:
     try:
         #print(player.stats)
-        if player.name in pp1_players and player.position != 'Goalie' and f'Last 7 {my_team.CURRENT_YEAR}' in player.stats:
-            target_players.append([player.name, player.proTeam, player.position, player.stats[F'Total {my_team.CURRENT_YEAR}']['total'], player.stats[F'Last 7 {my_team.CURRENT_YEAR}']['total']])
+        if player.name in pp1_players and player.position != 'Goalie':# and f'Last 7 {my_team.CURRENT_YEAR}' in player.stats:
+            target_players.append([player.name, player.proTeam, player.position, player.stats[F'Total {my_team.CURRENT_YEAR}']['total']])#, player.stats[F'Last 7 {my_team.CURRENT_YEAR}']['total']])
             to_dump.append(player.name + "\n" + str(player.stats) + "\n")
     except KeyError as e:
         print()
@@ -77,17 +81,17 @@ for player in target_players:
         goals = str(player[STATS][GOALS]).split('.')[0]
         assists = str(player[STATS][ASSISTS]).split('.')[0]
         powerplay_pts = str(player[STATS][POWERPLAY_POINTS]).split('.')[0]
-        last_7_games_points = player[LAST_7_GAMES][GOALS] + player[LAST_7_GAMES][ASSISTS]
+        # last_7_games_points = player[LAST_7_GAMES][GOALS] + player[LAST_7_GAMES][ASSISTS]
         games_played = str(player[STATS][GAMES_PLAYED]).split('.')[0]
         player.append(int(goals)) # Goals index 5
         player.append(int(assists)) # Assists index 6
-        player.append(player[5] + player[6]) # Points index 7
+        player.append(player[4] + player[5]) # Points index 7
         player.append(int(powerplay_pts)) # PPP index 8
-        player.append(int(last_7_games_points)) # Last 7 points index 9
+        # player.append(int(last_7_games_points)) # Last 7 points index 9
         player.append(int(games_played)) # Games played index 10
 
 # Sort players by points 
-target_players = sorted(target_players, key=lambda x: (x[9], x[7]), reverse=True)
+target_players = sorted(target_players, key=lambda x: (x[8], x[6]), reverse=True)
 print('\n---------RESULTS---------')
 
 # print(target_players[0])
@@ -111,11 +115,11 @@ for player in my_players:
         powerplay_pts = player[STATS][POWERPLAY_POINTS]
         # print('TEST HERE')
         # print(player)
-        last_7_games_points = player[LAST_7_GAMES][GOALS] + player[LAST_7_GAMES][ASSISTS]
+        # last_7_games_points = player[LAST_7_GAMES][GOALS] + player[LAST_7_GAMES][ASSISTS]
         games_played = player[STATS][GAMES_PLAYED]
-        players_not_pp1.append([player[NAME], player[TEAM], player[POSITION], ' ', ' ', int(goals), int(assists), int(points), int(powerplay_pts) , int(last_7_games_points), int(games_played)])
+        players_not_pp1.append([player[NAME], player[TEAM], player[POSITION], ' ', ' ', int(goals), int(assists), int(points), int(powerplay_pts)])# , int(last_7_games_points), int(games_played)])
 
 
-players_not_pp1 = sorted(players_not_pp1, key=lambda x: (x[9], x[7]))
+players_not_pp1 = sorted(players_not_pp1, key=lambda x: (x[8], x[6]))
 print_players(players_not_pp1)
 
