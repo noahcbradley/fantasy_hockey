@@ -1,14 +1,30 @@
 import { useState } from 'react';
-import type { Player } from '../types';
+import type { Player, PlayerStats } from '../types';
 
 type SortKey = 'name' | 'pro_team' | 'position' | 'goals' | 'assists' | 'points' | 'powerplay_points' | 'games_played';
+type Period = 'season' | 'last_7' | 'last_15' | 'last_30';
 
-function getValue(player: Player, key: SortKey): string | number {
+const PERIOD_LABELS: Record<Period, string> = {
+  season: 'Season',
+  last_7: 'Last 7',
+  last_15: 'Last 15',
+  last_30: 'Last 30',
+};
+
+function getStats(player: Player, period: Period): PlayerStats | null {
+  if (period === 'season') return player.stats;
+  return player[period];
+}
+
+function getValue(player: Player, key: SortKey, period: Period): string | number {
   switch (key) {
     case 'name': return player.name;
     case 'pro_team': return player.pro_team;
     case 'position': return player.position;
-    default: return player.stats[key];
+    default: {
+      const s = getStats(player, period);
+      return s ? s[key] : 0;
+    }
   }
 }
 
@@ -16,13 +32,18 @@ export default function PlayerTable({
   players,
   title,
   accent,
+  defaultSortKey = 'points',
+  defaultSortAsc = false,
 }: {
   players: Player[];
   title: string;
   accent: 'green' | 'amber';
+  defaultSortKey?: SortKey;
+  defaultSortAsc?: boolean;
 }) {
-  const [sortKey, setSortKey] = useState<SortKey | null>(null);
-  const [sortAsc, setSortAsc] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>(defaultSortKey);
+  const [sortAsc, setSortAsc] = useState(defaultSortAsc);
+  const [period, setPeriod] = useState<Period>('season');
 
   const headerColor =
     accent === 'green'
@@ -38,19 +59,17 @@ export default function PlayerTable({
     }
   };
 
-  const sorted = sortKey
-    ? [...players].sort((a, b) => {
-        const aVal = getValue(a, sortKey);
-        const bVal = getValue(b, sortKey);
-        let cmp: number;
-        if (typeof aVal === 'string' && typeof bVal === 'string') {
-          cmp = aVal.localeCompare(bVal);
-        } else {
-          cmp = (aVal as number) - (bVal as number);
-        }
-        return sortAsc ? cmp : -cmp;
-      })
-    : players;
+  const sorted = [...players].sort((a, b) => {
+    const aVal = getValue(a, sortKey, period);
+    const bVal = getValue(b, sortKey, period);
+    let cmp: number;
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      cmp = aVal.localeCompare(bVal);
+    } else {
+      cmp = (aVal as number) - (bVal as number);
+    }
+    return sortAsc ? cmp : -cmp;
+  });
 
   const arrow = (key: SortKey) => {
     if (sortKey !== key) return '';
@@ -72,9 +91,26 @@ export default function PlayerTable({
 
   return (
     <div className="mb-8">
-      <h2 className={`mb-3 border-l-4 pl-3 text-lg font-semibold ${headerColor}`}>
-        {title}
-      </h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className={`border-l-4 pl-3 text-lg font-semibold ${headerColor}`}>
+          {title}
+        </h2>
+        <div className="flex gap-1 rounded-lg bg-gray-800 p-1">
+          {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                period === p
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {PERIOD_LABELS[p]}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
@@ -90,23 +126,34 @@ export default function PlayerTable({
             </tr>
           </thead>
           <tbody>
-            {sorted.map((p, i) => (
-              <tr
-                key={p.name}
-                className={`border-b border-gray-800 ${
-                  i % 2 === 0 ? 'bg-gray-800/50' : ''
-                } hover:bg-gray-700/50`}
-              >
-                <td className="px-3 py-2 font-medium text-white">{p.name}</td>
-                <td className="px-3 py-2">{p.pro_team}</td>
-                <td className="px-3 py-2">{p.position}</td>
-                <td className="px-3 py-2 text-right">{p.stats.goals}</td>
-                <td className="px-3 py-2 text-right">{p.stats.assists}</td>
-                <td className="px-3 py-2 text-right">{p.stats.points}</td>
-                <td className="px-3 py-2 text-right">{p.stats.powerplay_points}</td>
-                <td className="px-3 py-2 text-right">{p.stats.games_played}</td>
-              </tr>
-            ))}
+            {sorted.map((p, i) => {
+              const s = getStats(p, period);
+              return (
+                <tr
+                  key={p.name}
+                  className={`border-b border-gray-800 ${
+                    i % 2 === 0 ? 'bg-gray-800/50' : ''
+                  } hover:bg-gray-700/50`}
+                >
+                  <td className="px-3 py-2 font-medium text-white">{p.name}</td>
+                  <td className="px-3 py-2">{p.pro_team}</td>
+                  <td className="px-3 py-2">{p.position}</td>
+                  {s ? (
+                    <>
+                      <td className="px-3 py-2 text-right">{s.goals}</td>
+                      <td className="px-3 py-2 text-right">{s.assists}</td>
+                      <td className="px-3 py-2 text-right">{s.points}</td>
+                      <td className="px-3 py-2 text-right">{s.powerplay_points}</td>
+                      <td className="px-3 py-2 text-right">{s.games_played}</td>
+                    </>
+                  ) : (
+                    <td colSpan={5} className="px-3 py-2 text-center text-gray-500">
+                      No data for this period
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -26,12 +26,16 @@ export default function ResultsView({
         title={`Recommended Pickups (${results.targets.length})`}
         players={results.targets}
         accent="green"
+        defaultSortKey="points"
+        defaultSortAsc={false}
       />
 
       <PlayerTable
         title={`Drop Candidates - Not on PP1 (${results.drop_candidates.length})`}
         players={results.drop_candidates}
         accent="amber"
+        defaultSortKey="points"
+        defaultSortAsc={true}
       />
     </div>
   );

@@ -36,13 +36,6 @@ function App() {
     setStep("team_select");
   };
 
-  const handleNewCredentials = () => {
-    setStep("credentials");
-    setCredentials(null);
-    setTeamsData(null);
-    setResults(null);
-    setError(null);
-  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">

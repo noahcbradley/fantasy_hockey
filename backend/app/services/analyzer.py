@@ -1,3 +1,6 @@
+from app.services.espn import PERIODS
+
+
 def extract_player_stats(raw_stats: dict) -> dict:
     return {
         "goals": int(float(raw_stats.get("G", 0))),
@@ -9,20 +12,25 @@ def extract_player_stats(raw_stats: dict) -> dict:
     }
 
 
+def _build_player(player: dict) -> dict:
+    result = {
+        "name": player["name"],
+        "pro_team": player["pro_team"],
+        "position": player["position"],
+        "stats": extract_player_stats(player["stats"]),
+    }
+    for period in PERIODS:
+        raw = player.get(period)
+        result[period] = extract_player_stats(raw) if raw else None
+    return result
+
+
 def find_targets(free_agents: list[dict], pp1_players: list[str]) -> list[dict]:
     """Free agents on PP1, sorted by PPP desc then assists desc."""
     targets = []
     for fa in free_agents:
         if fa["name"] in pp1_players:
-            stats = extract_player_stats(fa["stats"])
-            targets.append(
-                {
-                    "name": fa["name"],
-                    "pro_team": fa["pro_team"],
-                    "position": fa["position"],
-                    "stats": stats,
-                }
-            )
+            targets.append(_build_player(fa))
 
     targets.sort(
         key=lambda x: (x["stats"]["powerplay_points"], x["stats"]["assists"]),
@@ -38,15 +46,7 @@ def find_drop_candidates(
     candidates = []
     for player in roster:
         if player["name"] not in pp1_players:
-            stats = extract_player_stats(player["stats"])
-            candidates.append(
-                {
-                    "name": player["name"],
-                    "pro_team": player["pro_team"],
-                    "position": player["position"],
-                    "stats": stats,
-                }
-            )
+            candidates.append(_build_player(player))
 
     candidates.sort(
         key=lambda x: (x["stats"]["powerplay_points"], x["stats"]["assists"])

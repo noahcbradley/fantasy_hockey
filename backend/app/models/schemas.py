@@ -34,22 +34,18 @@ class PlayerStats(BaseModel):
     games_played: int
 
 
-class TargetPlayer(BaseModel):
+class PlayerData(BaseModel):
     name: str
     pro_team: str
     position: str
     stats: PlayerStats
-
-
-class RosterPlayer(BaseModel):
-    name: str
-    pro_team: str
-    position: str
-    stats: PlayerStats
+    last_7: PlayerStats | None = None
+    last_15: PlayerStats | None = None
+    last_30: PlayerStats | None = None
 
 
 class AnalyzeResponse(BaseModel):
-    targets: list[TargetPlayer]
-    drop_candidates: list[RosterPlayer]
+    targets: list[PlayerData]
+    drop_candidates: list[PlayerData]
     team_name: str
     year: int

@@ -23,6 +23,9 @@ export interface Player {
   pro_team: string;
   position: string;
   stats: PlayerStats;
+  last_7: PlayerStats | null;
+  last_15: PlayerStats | null;
+  last_30: PlayerStats | null;
 }
 
 export interface AnalyzeResponse {
