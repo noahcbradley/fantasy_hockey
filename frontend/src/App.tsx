@@ -30,7 +30,13 @@ function App() {
     setStep("results");
   };
 
-  const handleReset = () => {
+  const handleBackToTeams = () => {
+    setResults(null);
+    setError(null);
+    setStep("team_select");
+  };
+
+  const handleNewCredentials = () => {
     setStep("credentials");
     setCredentials(null);
     setTeamsData(null);
@@ -61,13 +67,13 @@ function App() {
             teams={teamsData.teams}
             year={teamsData.year}
             onAnalyzed={handleTeamSelected}
-            onBack={handleReset}
+            onBack={handleBackToTeams}
             onError={setError}
           />
         )}
 
         {step === "results" && results && (
-          <ResultsView results={results} onBack={handleReset} />
+          <ResultsView results={results} onBack={handleBackToTeams} />
         )}
       </main>
     </div>
