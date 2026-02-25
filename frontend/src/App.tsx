@@ -41,7 +41,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <header className="border-b border-gray-700 bg-gray-800 px-6 py-4">
-        <h1 className="text-2xl font-bold">Fantasy Hockey Analyzer</h1>
+        <h1 className="text-2xl font-bold">ESPN Fantasy Hockey Analyzer</h1>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">
         {error && (
