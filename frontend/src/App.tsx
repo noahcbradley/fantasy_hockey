@@ -1,28 +1,30 @@
-import { useState } from "react";
-import CredentialsForm from "./components/CredentialsForm";
+import { useEffect, useState } from "react";
 import TeamSelector from "./components/TeamSelector";
 import ResultsView from "./components/ResultsView";
 import ErrorBanner from "./components/ErrorBanner";
-import type { Credentials, TeamsResponse, AnalyzeResponse } from "./types";
+import LoadingSpinner from "./components/LoadingSpinner";
+import type { TeamsResponse, AnalyzeResponse } from "./types";
+import { fetchTeams } from "./api/client";
 
-type Step = "credentials" | "team_select" | "results";
+type Step = "loading" | "team_select" | "results";
 
 function App() {
-  const [step, setStep] = useState<Step>("credentials");
-  const [credentials, setCredentials] = useState<Credentials | null>(null);
+  const [step, setStep] = useState<Step>("loading");
   const [teamsData, setTeamsData] = useState<TeamsResponse | null>(null);
   const [results, setResults] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleCredentialsSubmit = (
-    creds: Credentials,
-    teams: TeamsResponse,
-  ) => {
-    setCredentials(creds);
-    setTeamsData(teams);
-    setError(null);
-    setStep("team_select");
-  };
+  useEffect(() => {
+    fetchTeams()
+      .then((data) => {
+        setTeamsData(data);
+        setStep("team_select");
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to connect");
+        setStep("team_select");
+      });
+  }, []);
 
   const handleTeamSelected = (analysis: AnalyzeResponse) => {
     setResults(analysis);
@@ -36,7 +38,6 @@ function App() {
     setStep("team_select");
   };
 
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <header className="border-b border-gray-700 bg-gray-800 px-6 py-4">
@@ -47,20 +48,15 @@ function App() {
           <ErrorBanner message={error} onDismiss={() => setError(null)} />
         )}
 
-        {step === "credentials" && (
-          <CredentialsForm
-            onSubmit={handleCredentialsSubmit}
-            onError={setError}
-          />
+        {step === "loading" && (
+          <LoadingSpinner message="Connecting to ESPN..." />
         )}
 
-        {step === "team_select" && credentials && teamsData && (
+        {step === "team_select" && teamsData && (
           <TeamSelector
-            credentials={credentials}
             teams={teamsData.teams}
             year={teamsData.year}
             onAnalyzed={handleTeamSelected}
-            onBack={handleBackToTeams}
             onError={setError}
           />
         )}

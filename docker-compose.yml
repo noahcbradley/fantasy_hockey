@@ -9,6 +9,10 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
+    environment:
+      - ESPN_SWID=${ESPN_SWID}
+      - ESPN_S2=${ESPN_S2}
+      - LEAGUE_ID=${LEAGUE_ID}
 
   frontend:
     build:

@@ -34,9 +34,3 @@ export interface AnalyzeResponse {
   team_name: string;
   year: number;
 }
-
-export interface Credentials {
-  swid: string;
-  espn_s2: string;
-  league_id: number;
-}

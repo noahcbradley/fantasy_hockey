@@ -1,11 +1,11 @@
 import asyncio
+import os
 
 from fastapi import APIRouter, HTTPException
 
 from app.models.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
-    Credentials,
     PlayerData,
     PlayerStats,
     TeamInfo,
@@ -14,6 +14,18 @@ from app.models.schemas import (
 from app.services import analyzer, espn, scraper
 
 router = APIRouter()
+
+
+def _get_credentials() -> tuple[str, str, int]:
+    swid = os.environ.get("ESPN_SWID", "")
+    espn_s2 = os.environ.get("ESPN_S2", "")
+    league_id = int(os.environ.get("LEAGUE_ID", "0"))
+    if not swid or not espn_s2 or not league_id:
+        raise HTTPException(
+            status_code=500,
+            detail="ESPN credentials not configured. Set ESPN_SWID, ESPN_S2, and LEAGUE_ID environment variables.",
+        )
+    return swid, espn_s2, league_id
 
 
 def _to_player_data(p: dict) -> PlayerData:
@@ -28,11 +40,12 @@ def _to_player_data(p: dict) -> PlayerData:
     )
 
 
-@router.post("/teams", response_model=TeamsResponse)
-async def get_teams(creds: Credentials):
+@router.get("/teams", response_model=TeamsResponse)
+async def get_teams():
+    swid, espn_s2, league_id = _get_credentials()
     try:
         league = await asyncio.to_thread(
-            espn.connect_league, creds.swid, creds.espn_s2, creds.league_id
+            espn.connect_league, swid, espn_s2, league_id
         )
     except Exception as e:
         raise HTTPException(
@@ -49,9 +62,10 @@ async def get_teams(creds: Credentials):
 
 @router.post("/analyze", response_model=AnalyzeResponse)
 async def analyze(req: AnalyzeRequest):
+    swid, espn_s2, league_id = _get_credentials()
     try:
         league = await asyncio.to_thread(
-            espn.connect_league, req.swid, req.espn_s2, req.league_id
+            espn.connect_league, swid, espn_s2, league_id
         )
     except Exception as e:
         raise HTTPException(

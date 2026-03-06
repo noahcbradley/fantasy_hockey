@@ -1,21 +1,17 @@
 import { useState } from 'react';
-import type { Credentials, TeamInfo, AnalyzeResponse } from '../types';
+import type { TeamInfo, AnalyzeResponse } from '../types';
 import { fetchAnalysis } from '../api/client';
 import LoadingSpinner from './LoadingSpinner';
 
 export default function TeamSelector({
-  credentials,
   teams,
   year,
   onAnalyzed,
-  onBack,
   onError,
 }: {
-  credentials: Credentials;
   teams: TeamInfo[];
   year: number;
   onAnalyzed: (data: AnalyzeResponse) => void;
-  onBack: () => void;
   onError: (msg: string) => void;
 }) {
   const [selected, setSelected] = useState('');
@@ -25,7 +21,7 @@ export default function TeamSelector({
     if (!selected) return;
     setLoading(true);
     try {
-      const data = await fetchAnalysis(credentials, selected);
+      const data = await fetchAnalysis(selected);
       onAnalyzed(data);
     } catch (err) {
       onError(err instanceof Error ? err.message : 'Analysis failed');
@@ -59,21 +55,13 @@ export default function TeamSelector({
         ))}
       </select>
 
-      <div className="flex gap-3">
-        <button
-          onClick={onBack}
-          className="rounded-lg border border-gray-600 px-4 py-2 text-gray-300 hover:bg-gray-800"
-        >
-          Back
-        </button>
-        <button
-          onClick={handleAnalyze}
-          disabled={!selected}
-          className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Analyze
-        </button>
-      </div>
+      <button
+        onClick={handleAnalyze}
+        disabled={!selected}
+        className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Analyze
+      </button>
     </div>
   );
 }

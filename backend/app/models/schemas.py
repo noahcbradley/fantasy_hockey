@@ -1,16 +1,7 @@
 from pydantic import BaseModel
 
 
-class Credentials(BaseModel):
-    swid: str
-    espn_s2: str
-    league_id: int
-
-
 class AnalyzeRequest(BaseModel):
-    swid: str
-    espn_s2: str
-    league_id: int
     team_name: str
 
 
